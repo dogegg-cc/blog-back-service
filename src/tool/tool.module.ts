@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ProjectConfigService, DbInitService } from './tool.service';
+import { ProjectConfigService } from './tool.service';
+import { UserInitService } from './services/userInit.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 @Module({
-  providers: [ProjectConfigService, DbInitService],
+  providers: [ProjectConfigService, UserInitService],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,

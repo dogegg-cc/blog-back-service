@@ -15,7 +15,7 @@ export class User {
     length: 20,
     unique: true,
   })
-  name!: string;
+  username!: string;
 
   @Column()
   password!: string;
