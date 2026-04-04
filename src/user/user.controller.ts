@@ -41,10 +41,11 @@ export class UserController {
   @ApiOperation({ summary: '修改密码' })
   @ApiBearerAuth()
   async updatePassword(
+    @Headers('dogtoken') token: string,
     @CurrentUser('id') userId: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    await this.userService.updatePassword(userId, updatePasswordDto);
+    await this.userService.updatePassword(userId, token, updatePasswordDto);
     return ResponseDto.success(null, '密码修改成功');
   }
 }

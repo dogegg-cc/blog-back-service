@@ -75,6 +75,7 @@ export class UserService {
    */
   async updatePassword(
     userId: string,
+    token: string,
     updatePasswordDto: UpdatePasswordDto,
   ): Promise<void> {
     const { oldPassword, newPassword } = updatePasswordDto;
@@ -108,6 +109,47 @@ export class UserService {
       password: newPasswordHash,
       isUpdatePassword: true,
     });
+
+    // 更新当前 token 对应的 Redis 缓存信息
+    await this.updateRedisCache(token, { isUpdatePassword: true });
+  }
+
+  /**
+   * 利用 token 更新 Redis 中缓存的用户信息字段
+   */
+  async updateRedisCache(
+    token: string,
+    partialUser: Partial<User>,
+  ): Promise<void> {
+    if (!token || Object.keys(partialUser).length === 0) return;
+
+    const cacheKey = `token:${token}`;
+    const cacheData = await this.redisClient.get(cacheKey);
+    if (cacheData) {
+      try {
+        const userInfo = JSON.parse(cacheData) as Record<string, unknown>;
+
+        // 用传递过来的 user 中带数据的字段，去覆写已有缓存对象
+        for (const key of Object.keys(partialUser)) {
+          const val = (partialUser as Record<string, unknown>)[key];
+          if (val !== undefined) {
+            userInfo[key] = val;
+          }
+        }
+
+        const ttl = await this.redisClient.ttl(cacheKey);
+        if (ttl > 0) {
+          await this.redisClient.set(
+            cacheKey,
+            JSON.stringify(userInfo),
+            'EX',
+            ttl,
+          );
+        }
+      } catch {
+        // 忽略解析异常
+      }
+    }
   }
 
   /**
