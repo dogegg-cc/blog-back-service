@@ -3,6 +3,10 @@ import { SqlConfigService, UserInitService } from './sql.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { Article } from './entities/article.entity';
+import { Category } from './entities/category.entity';
+import { Tag } from './entities/tag.entity';
+
 @Module({
   providers: [SqlConfigService, UserInitService],
   imports: [
@@ -13,7 +17,7 @@ import { User } from './entities/user.entity';
     TypeOrmModule.forRootAsync({
       useClass: SqlConfigService,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Article, Category, Tag]),
   ],
 })
 export class SqlModule {}
