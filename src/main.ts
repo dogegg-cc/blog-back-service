@@ -58,7 +58,14 @@ async function bootstrap() {
       .setTitle('Blog Admin API')
       .setDescription('Blog后台管理接口文档')
       .setVersion('1.0')
-      .addBearerAuth()
+      .addBearerAuth(
+        {
+          type: 'http',
+          name: 'dogtoken',
+          description: '请输入token',
+        },
+        'dogtoken',
+      )
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
