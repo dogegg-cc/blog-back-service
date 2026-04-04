@@ -1,17 +1,28 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   ManyToMany,
   UpdateDateColumn,
+  BeforeInsert,
 } from 'typeorm';
 import { Article } from './article.entity';
+import ShortUniqueId from 'short-unique-id';
+
+const uid = new ShortUniqueId({ length: 10 });
 
 @Entity('tag')
 export class Tag {
-  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  @PrimaryColumn({ name: 'id', type: 'varchar', length: 10 })
   id!: string;
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = uid.rnd();
+    }
+  }
 
   @Column({ name: 'name', length: 50, unique: true, comment: '标签名称' })
   name!: string;
