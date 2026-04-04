@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ConfigService } from '@nestjs/config';
 import {
   WinstonModule,
@@ -34,6 +35,7 @@ const instance = WinstonModule.createLogger({
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: instance });
+  app.useGlobalFilters(new AllExceptionsFilter());
   // main.ts中读取.env文件中的PORT配置
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);
