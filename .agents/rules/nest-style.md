@@ -34,7 +34,7 @@ trigger: always_on
 
 ### 4. 最佳实践建议
 - **迁移管理**：严禁在生产环境开启 `synchronize: true`。必须使用 TypeORM Migration 进行数据库变更。
-- **响应封装**：建议返回统一的 JSON 格式（ `{ code, data, message }`）。
+- **响应封装**：建议返回统一的 ResponseDto类型格式, 对应的data如果有值，需要创建对应的Dto文件。
 - **安全**：敏感字段（如 `password`）必须在实体中使用 `{ select: false }` 或在 DTO 中使用 `@Exclude()`。
 
 ### 5. 语言要求

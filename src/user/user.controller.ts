@@ -1,12 +1,15 @@
 import { Controller, Post, Body, UsePipes, Headers } from '@nestjs/common';
 import { UserService } from './user.service';
-import { LogonDto } from './dto/logon.dto';
+import { LogonDto, LogonResponseDto } from './dto/logon.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
 import { ResponseDto } from '../common/dto/response.dto';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiSuccessResponse } from '../common/decorators/swagger.decorator';
 
+@ApiTags('用户管理')
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -14,6 +17,11 @@ export class UserController {
   @Public()
   @Post('logon')
   @UsePipes(ZodValidationPipe)
+  @ApiOperation({ summary: '用户登录' })
+  @ApiSuccessResponse({
+    description: '登录成功',
+    type: LogonResponseDto,
+  })
   async logon(@Body() logonDto: LogonDto) {
     const data = await this.userService.logon(logonDto);
     return ResponseDto.success(data, '登录成功');
@@ -21,6 +29,8 @@ export class UserController {
 
   @Public()
   @Post('logoff')
+  @ApiOperation({ summary: '用户退出登录' })
+  @ApiBearerAuth()
   async logoff(@Headers('dogtoken') token?: string) {
     await this.userService.logoff(token);
     return ResponseDto.success(null, '退出登录成功');
@@ -28,6 +38,8 @@ export class UserController {
 
   @Post('updatePassword')
   @UsePipes(ZodValidationPipe)
+  @ApiOperation({ summary: '修改密码' })
+  @ApiBearerAuth()
   async updatePassword(
     @CurrentUser('id') userId: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
