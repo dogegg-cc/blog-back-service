@@ -30,6 +30,7 @@ trigger: always_on
 - **异常处理**：使用 NestJS 内置的 `HttpException`（如 `NotFoundException`, `ConflictException`）。捕获并转换 PostgreSQL 错误码（如 `23505` 唯一约束冲突）。
 - **配置管理**：始终通过 `@nestjs/config` 获取环境变量，严禁硬编码敏感信息。
 - **DTO 增强**：所有 DTO 字段必须由Zod创建，并配合 Swagger `@ApiProperty` 文档说明。
+- **ESLint**: 修改代码后需要执行ESLint命令，检查是否存在问题，并且解决相关问题。
 
 ### 4. 最佳实践建议
 - **迁移管理**：严禁在生产环境开启 `synchronize: true`。必须使用 TypeORM Migration 进行数据库变更。

@@ -36,6 +36,14 @@ const instance = WinstonModule.createLogger({
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: instance });
+
+  // 启用跨域资源共享 (CORS)
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
   app.useGlobalFilters(new AllExceptionsFilter());
   // main.ts中读取.env文件中的PORT配置
   const configService = app.get(ConfigService);
