@@ -16,7 +16,7 @@ trigger: always_on
 ### 2. TypeORM 与 PostgreSQL 规范
 - **命名约定**：数据库表名、列名使用 `snake_case`（下划线），代码属性名使用 `camelCase`（小驼峰）。
 - **实体定义**：
-  - 必须包含 `id` (推荐 UUID), `createdAt`, `updatedAt` 字段。
+  - 必须包含 `id` (推荐 UUID), `created_at`, `updated_at` 字段。
   - 时间字段使用 `timestamptz` 类型以确保时区正确。
   - 显式定义外键约束（`onDelete` 行为）。
   - 合理使用 `@Index()` 为高频查询字段创建索引。

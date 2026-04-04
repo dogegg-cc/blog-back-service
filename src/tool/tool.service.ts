@@ -31,6 +31,9 @@ export class ProjectConfigService implements TypeOrmOptionsFactory {
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
+    const isProduction = this.config.get<string>('NODE_ENV') === 'production';
+    const enableSync = isProduction ? false : this.dbSync; // 严禁在生产环境开启 `synchronize: true`
+
     return {
       type: 'postgres',
       host: this.dbHost,
@@ -39,8 +42,8 @@ export class ProjectConfigService implements TypeOrmOptionsFactory {
       password: this.dbPassword,
       database: this.dbDatabase,
       autoLoadEntities: true,
-      synchronize: this.dbSync, // 开发环境适用，生产环境建议关闭
-      logging: this.dbSync,
+      synchronize: enableSync, // 开发环境适用，生产环境强制关闭
+      logging: enableSync,
     };
   }
 }
