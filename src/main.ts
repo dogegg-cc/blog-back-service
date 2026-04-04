@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
   WinstonModule,
   utilities as nestWinstonModuleUtilities,
@@ -39,7 +40,28 @@ async function bootstrap() {
   // main.ts中读取.env文件中的PORT配置
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);
+  const env =
+    configService.get<string>('NODE_ENV') ||
+    process.env.NODE_ENV ||
+    'development';
+
+  if (env !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Blog Admin API')
+      .setDescription('Blog后台管理接口文档')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
+
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
+  if (env !== 'production') {
+    console.log(
+      `Swagger Docs is available at: http://localhost:${port}/api/docs`,
+    );
+  }
 }
 void bootstrap();
