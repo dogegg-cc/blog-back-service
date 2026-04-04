@@ -1,12 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../sql/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LogonDto } from './dto/logon.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 import * as bcrypt from 'bcrypt';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { randomUUID } from 'crypto';
+import { BusinessException } from '../common/exceptions/business.exception';
+import { ErrorCode } from '../common/constants/error-code.constant';
 
 @Injectable()
 export class UserService {
@@ -30,13 +33,13 @@ export class UserService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('账号或密码错误');
+      throw new BusinessException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
     }
 
     // 校验密码
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('账号或密码错误');
+      throw new BusinessException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
     }
 
     // 创建 token (UUID)
@@ -62,5 +65,49 @@ export class UserService {
       token,
       isUpdatePassword: user.isUpdatePassword,
     };
+  }
+
+  /**
+   * 处理修改密码逻辑
+   */
+  async updatePassword(userId: string, updatePasswordDto: UpdatePasswordDto) {
+    const { oldPassword, newPassword } = updatePasswordDto;
+
+    if (oldPassword === newPassword) {
+      throw new BusinessException(ErrorCode.PASSWORD_SAME);
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'password'],
+    });
+
+    if (!user) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      throw new BusinessException(ErrorCode.PASSWORD_ERROR);
+    }
+
+    // 生成新密码的 hash
+    const salt = await bcrypt.genSalt();
+    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+
+    // 更新密码及 isUpdatePassword 标志
+    await this.userRepository.update(userId, {
+      password: newPasswordHash,
+      isUpdatePassword: true,
+    });
+  }
+
+  /**
+   * 处理退出登录逻辑
+   */
+  async logoff(token?: string) {
+    if (token) {
+      await this.redisClient.del(`token:${token}`);
+    }
   }
 }

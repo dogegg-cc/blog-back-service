@@ -6,9 +6,10 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { ZodValidationException } from 'nestjs-zod';
+import { BusinessException } from '../exceptions/business.exception';
 import { ZodError } from 'zod';
+import { Response, Request } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -16,23 +17,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    // type Response & Request from express implicitly or explicitly
+
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
+    let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let code = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = '服务器内部错误';
 
-    if (exception instanceof ZodValidationException) {
-      code = exception.getStatus();
+    if (exception instanceof BusinessException) {
+      httpStatus = HttpStatus.OK;
+      code = exception.getBusinessCode();
+      message = exception.message;
+    } else if (exception instanceof ZodValidationException) {
+      httpStatus = exception.getStatus();
+      code = httpStatus;
       try {
         const zodError = exception.getZodError() as ZodError;
         message = String(zodError.issues.map((e) => e.message).join(', '));
       } catch {
-        message = exception.message;
+        message = (exception as Error).message;
       }
     } else if (exception instanceof HttpException) {
-      code = exception.getStatus();
+      httpStatus = exception.getStatus();
+      code = httpStatus;
       const res = exception.getResponse();
 
       if (typeof res === 'string') {
