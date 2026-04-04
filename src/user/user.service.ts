@@ -4,12 +4,12 @@ import { User } from '../sql/entities/user.entity';
 import { Repository } from 'typeorm';
 import { LogonDto } from './dto/logon.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import * as bcrypt from 'bcrypt';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { randomUUID } from 'crypto';
 import { BusinessException } from '../common/exceptions/business.exception';
 import { ErrorCode } from '../common/constants/error-code.constant';
+import { BcryptUtil } from '../common/utils/bcrypt.util';
 
 @Injectable()
 export class UserService {
@@ -37,7 +37,10 @@ export class UserService {
     }
 
     // 校验密码
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await BcryptUtil.comparePassword(
+      password,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new BusinessException(ErrorCode.ACCOUNT_PASSWORD_ERROR);
     }
@@ -86,14 +89,16 @@ export class UserService {
       throw new BusinessException(ErrorCode.USER_NOT_FOUND);
     }
 
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    const isPasswordValid = await BcryptUtil.comparePassword(
+      oldPassword,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new BusinessException(ErrorCode.PASSWORD_ERROR);
     }
 
     // 生成新密码的 hash
-    const salt = await bcrypt.genSalt();
-    const newPasswordHash = await bcrypt.hash(newPassword, salt);
+    const newPasswordHash = await BcryptUtil.hashPassword(newPassword);
 
     // 更新密码及 isUpdatePassword 标志
     await this.userRepository.update(userId, {

@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
+import { BcryptUtil } from '../common/utils/bcrypt.util';
 
 @Injectable()
 export class SqlConfigService implements TypeOrmOptionsFactory {
@@ -78,10 +78,8 @@ export class UserInitService implements OnApplicationBootstrap {
       const defaultUsername = this.config.get<string>('DEFAULT_USERNAME') || '';
       const defaultPassword = this.config.get<string>('DEFAULT_PASSWORD') || '';
 
-      // 定义 bcrypt 所需的盐生成轮数参数（数值越高越安全但计算越慢，10 为推荐平衡值）
-      const saltRounds = 10;
       // 密码写入数据库前必须经过 hash 加密，严禁明文存储敏感信息
-      const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
+      const hashedPassword = await BcryptUtil.hashPassword(defaultPassword);
 
       // 通过 TypeORM Entity 实例创建一个新用户，确保所有默认值与时区正确写入
       const user = this.userRepository.create({
