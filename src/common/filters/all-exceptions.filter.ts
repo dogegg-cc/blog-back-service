@@ -63,7 +63,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     );
 
     // 根据要求，统一返回格式： code非200表示错误
-    response.status(code).json({
+    response.status(200).json({
       code,
       data: null,
       message,
