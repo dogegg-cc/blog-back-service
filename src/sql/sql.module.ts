@@ -15,6 +15,5 @@ import { User } from './entities/user.entity';
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  exports: [SqlConfigService],
 })
 export class SqlModule {}
