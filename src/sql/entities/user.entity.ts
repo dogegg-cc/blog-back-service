@@ -24,6 +24,13 @@ export class User {
   })
   password!: string;
 
+  @Column({
+    name: 'is_update_password',
+    type: 'boolean',
+    default: false,
+  })
+  isUpdatePassword!: boolean;
+
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamptz',
