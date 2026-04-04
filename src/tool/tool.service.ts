@@ -27,7 +27,7 @@ export class ProjectConfigService implements TypeOrmOptionsFactory {
   }
 
   get dbSync(): boolean {
-    return this.config.get<boolean>('DB_SYNC')!;
+    return this.config.get<string>('DB_SYNC')! === 'true';
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
@@ -40,7 +40,7 @@ export class ProjectConfigService implements TypeOrmOptionsFactory {
       database: this.dbDatabase,
       autoLoadEntities: true,
       synchronize: this.dbSync, // 开发环境适用，生产环境建议关闭
-      logging: true,
+      logging: this.dbSync,
     };
   }
 }
