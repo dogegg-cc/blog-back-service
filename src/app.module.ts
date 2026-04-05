@@ -8,9 +8,17 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { TagModule } from './blog/tag/tag.module';
 import { CategoryModule } from './blog/category/category.module';
+import { ArticleModule } from './blog/article/article.module';
 
 @Module({
-  imports: [SqlModule, RedisModule, UserModule, TagModule, CategoryModule],
+  imports: [
+    SqlModule,
+    RedisModule,
+    UserModule,
+    TagModule,
+    CategoryModule,
+    ArticleModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
