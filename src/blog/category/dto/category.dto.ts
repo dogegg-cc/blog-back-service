@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export const CreateCategorySchema = z.object({
   name: z
@@ -34,18 +34,19 @@ export const UpdateCategorySchema = z.object({
     .string()
     .min(1, 'SEO路径不能为空')
     .max(50, 'SEO路径不能超过50个字符')
-    .regex(/^[a-z0-9-]+$/, 'SEO路径只能包含小写字母、数字和连字符(-)'),
+    .regex(/^[a-z0-9-]+$/, 'SEO路径只能包含小写字母、数字和连字符(-)')
+    .optional(),
 });
 
 export class UpdateCategoryDto extends createZodDto(UpdateCategorySchema) {
   @ApiProperty({ description: '分类名称', example: '后端技术' })
   name!: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '唯一标识短路径 (主要用于SEO)',
     example: 'backend',
   })
-  slug!: string;
+  slug?: string;
 }
 
 export const DeleteCategoriesSchema = z.object({
