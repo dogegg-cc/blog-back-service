@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('标签管理')
 @ApiBearerAuth()
@@ -59,6 +60,7 @@ export class TagController {
   }
 
   @Get('list')
+  @Public()
   @ApiOperation({ summary: '查询所有标签' })
   @ApiSuccessResponse({
     type: TagResponseDto,

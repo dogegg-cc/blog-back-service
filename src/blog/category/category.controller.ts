@@ -24,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('分类管理')
 @ApiBearerAuth()
@@ -62,6 +63,7 @@ export class CategoryController {
   }
 
   @Get('list')
+  @Public()
   @ApiOperation({ summary: '查询所有分类' })
   @ApiSuccessResponse({
     type: CategoryResponseDto,
