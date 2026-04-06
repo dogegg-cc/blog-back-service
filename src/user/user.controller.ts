@@ -2,6 +2,8 @@ import { Controller, Post, Body, UsePipes, Headers } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LogonDto, LogonResponseDto } from './dto/logon.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserInfoDto } from './dto/user-info.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/user.decorator';
@@ -47,5 +49,21 @@ export class UserController {
   ) {
     await this.userService.updatePassword(userId, token, updatePasswordDto);
     return ResponseDto.success(null, '密码修改成功');
+  }
+
+  @Post('update')
+  @UsePipes(ZodValidationPipe)
+  @ApiOperation({ summary: '修改用户信息' })
+  @ApiBearerAuth()
+  @ApiSuccessResponse({
+    description: '修改成功',
+    type: UserInfoDto,
+  })
+  async update(
+    @CurrentUser('id') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const data = await this.userService.update(userId, updateUserDto);
+    return ResponseDto.success(data, '信息修改成功');
   }
 }

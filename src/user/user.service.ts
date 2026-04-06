@@ -2,14 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../sql/entities/user.entity';
 import { Repository } from 'typeorm';
-import { LogonDto, LogonResponseDto } from './dto/logon.dto';
+import {
+  LogonDto,
+  LogonResponseDto,
+  LogonResponseSchema,
+} from './dto/logon.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import { randomUUID } from 'crypto';
 import { BusinessException } from '../common/exceptions/business.exception';
 import { ErrorCode } from '../common/constants/error-code.constant';
 import { BcryptUtil } from '../common/utils/bcrypt.util';
+import { UserInfoDto, UserInfoSchema } from './dto/user-info.dto';
 
 @Injectable()
 export class UserService {
@@ -29,7 +35,17 @@ export class UserService {
     // 根据账号查询用户，必须显式 select password 才能用于比对
     const user = await this.userRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'password', 'isUpdatePassword'],
+      select: [
+        'id',
+        'username',
+        'password',
+        'isUpdatePassword',
+        'name',
+        'email',
+        'github',
+        'slogan',
+        'avatar',
+      ],
     });
 
     if (!user) {
@@ -62,12 +78,8 @@ export class UserService {
       'EX',
       60 * 60 * 24,
     );
-
     // 返回给控制器的结果
-    return {
-      token,
-      isUpdatePassword: user.isUpdatePassword,
-    };
+    return LogonResponseSchema.parse({ ...user, token: token });
   }
 
   /**
@@ -159,5 +171,28 @@ export class UserService {
     if (token) {
       await this.redisClient.del(`token:${token}`);
     }
+  }
+
+  /**
+   * 更新用户信息
+   */
+  async update(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserInfoDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    await this.userRepository.update(userId, updateUserDto);
+    const userInfo = (await this.userRepository.findOne({
+      where: { id: userId },
+    })) as User;
+    // 返回更新后的完整用户信息
+    return UserInfoSchema.parse(userInfo);
   }
 }
