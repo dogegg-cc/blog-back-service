@@ -7,4 +7,6 @@ export const ErrorCode = {
   TOKEN_INVALID: { code: 10005, message: '登录凭证已过期或无效，请重新登录' },
   TOKEN_MISSING: { code: 10006, message: '请求头部缺失 token，请重新登录' },
   TOKEN_PARSE_ERROR: { code: 10007, message: '解析用户信息失败，请重新登录' },
+  DATA_NOT_FOUND: { code: 20000, message: '数据不存在' },
+  PARAM_ERROR: { code: 20001, message: '参数错误' },
 };
