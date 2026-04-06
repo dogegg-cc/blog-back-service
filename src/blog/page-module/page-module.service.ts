@@ -89,12 +89,29 @@ export class PageModuleService {
       return modules;
     }
 
-    // 3. 一次性查询相关文章（排除 content 字段，不带分类标签）
+    // 3. 一次性查询相关文章（带分类标签，排除大字段 content）
     const articles = await this.articleRepository.find({
       where: {
         id: In(articleIdList),
       },
-      select: ['id', 'title', 'summary', 'bannerUrl'],
+      relations: {
+        category: true,
+        tags: true,
+      },
+      select: {
+        id: true,
+        title: true,
+        summary: true,
+        bannerUrl: true,
+        category: {
+          id: true,
+          name: true,
+        },
+        tags: {
+          id: true,
+          name: true,
+        },
+      },
     });
 
     // 4. 将文章缓存为 Map 以便快速查找
