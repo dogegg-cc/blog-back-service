@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UsePipes, Headers } from '@nestjs/common';
+import { Controller, Post, Get, Body, UsePipes, Headers } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LogonDto, LogonResponseDto } from './dto/logon.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
@@ -65,5 +65,17 @@ export class UserController {
   ) {
     const data = await this.userService.update(userId, updateUserDto);
     return ResponseDto.success(data, '信息修改成功');
+  }
+
+  @Get('info')
+  @ApiOperation({ summary: '获取当前登录用户信息' })
+  @ApiBearerAuth()
+  @ApiSuccessResponse({
+    description: '获取成功',
+    type: UserInfoDto,
+  })
+  async getInfo(@CurrentUser('id') userId: string) {
+    const data = await this.userService.getUserInfo(userId);
+    return ResponseDto.success(data, '获取成功');
   }
 }

@@ -195,4 +195,19 @@ export class UserService {
     // 返回更新后的完整用户信息
     return UserInfoSchema.parse(userInfo);
   }
+
+  /**
+   * 获取用户信息
+   */
+  async getUserInfo(userId: string): Promise<UserInfoDto> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+
+    return UserInfoSchema.parse(user);
+  }
 }
