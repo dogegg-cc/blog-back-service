@@ -7,6 +7,7 @@ import {
   Param,
   UsePipes,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TagService } from './tag.service';
 import {
@@ -21,6 +22,7 @@ import {
   ApiOperation,
   ApiBearerAuth,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
@@ -62,13 +64,14 @@ export class TagController {
   @Get('list')
   @Public()
   @ApiOperation({ summary: '查询所有标签' })
+  @ApiQuery({ name: 'categoryId', required: false, description: '分类ID' })
   @ApiSuccessResponse({
     type: TagResponseDto,
     isArray: true,
     description: '查询成功',
   })
-  async findAll() {
-    const data = await this.tagService.findAll();
+  async findAll(@Query('categoryId') categoryId?: string) {
+    const data = await this.tagService.findAll(categoryId);
     return ResponseDto.success(data, '查询标签列表成功');
   }
 }

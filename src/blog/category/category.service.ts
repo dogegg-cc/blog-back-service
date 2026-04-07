@@ -91,6 +91,7 @@ export class CategoryService {
    */
   async findAll(): Promise<CategoryResponseDto[]> {
     const list = await this.categoryRepository.find({
+      relations: { tags: true },
       order: { createdAt: 'DESC' },
     });
     return z.array(CategoryResponseSchema).parse(list);

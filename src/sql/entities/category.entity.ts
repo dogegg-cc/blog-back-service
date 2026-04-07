@@ -9,6 +9,7 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import { Article } from './article.entity';
+import { Tag } from './tag.entity';
 import ShortUniqueId from 'short-unique-id';
 
 const uid = new ShortUniqueId({ length: 10 });
@@ -49,4 +50,7 @@ export class Category {
 
   @OneToMany(() => Article, (article: Article) => article.category)
   articles!: Article[];
+
+  @OneToMany(() => Tag, (tag: Tag) => tag.category)
+  tags!: Tag[];
 }

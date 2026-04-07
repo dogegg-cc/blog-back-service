@@ -6,8 +6,11 @@ import {
   ManyToMany,
   UpdateDateColumn,
   BeforeInsert,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Article } from './article.entity';
+import { Category } from './category.entity';
 import ShortUniqueId from 'short-unique-id';
 
 const uid = new ShortUniqueId({ length: 10 });
@@ -26,6 +29,15 @@ export class Tag {
 
   @Column({ name: 'name', length: 50, unique: true, comment: '标签名称' })
   name!: string;
+
+  @Column({ name: 'category_id', length: 10, comment: '分类ID' })
+  categoryId!: string;
+
+  @ManyToOne(() => Category, (category: Category) => category.tags, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category!: Category;
 
   @CreateDateColumn({
     name: 'created_at',

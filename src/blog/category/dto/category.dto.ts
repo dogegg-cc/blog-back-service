@@ -60,10 +60,13 @@ export class DeleteCategoriesDto extends createZodDto(DeleteCategoriesSchema) {
   ids!: string[];
 }
 
+import { TagResponseDto, TagResponseSchema } from '../../tag/dto/tag.dto';
+
 export const CategoryResponseSchema = z.object({
   id: z.string(),
   name: z.string(),
   slug: z.string(),
+  tags: z.array(TagResponseSchema).optional(),
 });
 
 export class CategoryResponseDto extends createZodDto(CategoryResponseSchema) {
@@ -75,4 +78,11 @@ export class CategoryResponseDto extends createZodDto(CategoryResponseSchema) {
 
   @ApiProperty({ description: 'SEO短路径' })
   slug!: string;
+
+  @ApiProperty({
+    description: '关联标签',
+    type: [TagResponseDto],
+    required: false,
+  })
+  tags?: TagResponseDto[];
 }
