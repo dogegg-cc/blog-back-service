@@ -22,25 +22,15 @@ export const UpdateTagSchema = z.object({
   name: z
     .string()
     .min(1, '标签名称不能为空')
-    .max(50, '标签名称不能超过50个字符')
-    .optional(),
-  categoryId: z.string().optional(),
+    .max(50, '标签名称不能超过50个字符'),
 });
 
 export class UpdateTagDto extends createZodDto(UpdateTagSchema) {
   @ApiProperty({
     description: '标签名称',
     example: '后端开发',
-    required: false,
   })
-  name?: string;
-
-  @ApiProperty({
-    description: '分类ID',
-    example: 'cat123',
-    required: false,
-  })
-  categoryId?: string;
+  name!: string;
 }
 
 export const DeleteTagsSchema = z.object({

@@ -27,6 +27,8 @@ import {
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
 import { Public } from '../../common/decorators/public.decorator';
+import { BusinessException } from '../../common/exceptions/business.exception';
+import { ErrorCode } from '../../common/constants/error-code.constant';
 
 @ApiTags('标签管理')
 @ApiBearerAuth()
@@ -64,13 +66,16 @@ export class TagController {
   @Get('list')
   @Public()
   @ApiOperation({ summary: '查询所有标签' })
-  @ApiQuery({ name: 'categoryId', required: false, description: '分类ID' })
+  @ApiQuery({ name: 'categoryId', required: true, description: '分类ID' })
   @ApiSuccessResponse({
     type: TagResponseDto,
     isArray: true,
     description: '查询成功',
   })
-  async findAll(@Query('categoryId') categoryId?: string) {
+  async findAll(@Query('categoryId') categoryId: string) {
+    if (!categoryId) {
+      throw new BusinessException(ErrorCode.PARAM_ERROR);
+    }
     const data = await this.tagService.findAll(categoryId);
     return ResponseDto.success(data, '查询标签列表成功');
   }

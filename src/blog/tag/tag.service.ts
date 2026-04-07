@@ -66,9 +66,9 @@ export class TagService {
   /**
    * 查找所有标签
    */
-  async findAll(categoryId?: string): Promise<TagResponseDto[]> {
+  async findAll(categoryId: string): Promise<TagResponseDto[]> {
     const list = await this.tagRepository.find({
-      where: categoryId ? { categoryId } : {},
+      where: { categoryId },
       order: { createdAt: 'DESC' },
     });
     return z.array(TagResponseSchema).parse(list);
