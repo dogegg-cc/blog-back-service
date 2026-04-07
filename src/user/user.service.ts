@@ -210,4 +210,15 @@ export class UserService {
 
     return UserInfoSchema.parse(user);
   }
+
+  /**
+   * 获取博客主（首个用户）信息
+   */
+  async getBlogOwnerInfo() {
+    return await this.userRepository.findOne({
+      where: {},
+      order: { createdAt: 'ASC' },
+      select: ['name', 'email', 'github', 'slogan', 'avatar'],
+    });
+  }
 }

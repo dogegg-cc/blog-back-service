@@ -9,5 +9,6 @@ import { RedisModule } from '../redis/redis.module';
   imports: [TypeOrmModule.forFeature([User]), RedisModule],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

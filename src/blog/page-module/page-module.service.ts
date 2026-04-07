@@ -140,4 +140,20 @@ export class PageModuleService {
       return mod;
     });
   }
+
+  /**
+   * 获取所有活跃的模块（首页展示用）
+   */
+  async findActiveModules() {
+    const modules = await this.pageModuleRepository.find({
+      where: { isActive: true },
+      order: {
+        sortOrder: 'DESC',
+      },
+    });
+
+    if (modules.length === 0) return [];
+
+    return await this.expandArticles(modules);
+  }
 }

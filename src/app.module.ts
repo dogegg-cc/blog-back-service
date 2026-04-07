@@ -10,6 +10,7 @@ import { TagModule } from './blog/tag/tag.module';
 import { CategoryModule } from './blog/category/category.module';
 import { ArticleModule } from './blog/article/article.module';
 import { PageModuleModule } from './blog/page-module/page-module.module';
+import { HomeModule } from './blog/home/home.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UploadModule } from './system/upload/upload.module';
 import { join } from 'path';
@@ -27,6 +28,7 @@ import { join } from 'path';
     CategoryModule,
     ArticleModule,
     PageModuleModule,
+    HomeModule,
     UploadModule,
   ],
   controllers: [AppController],
