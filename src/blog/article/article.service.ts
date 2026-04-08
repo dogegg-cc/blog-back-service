@@ -119,7 +119,10 @@ export class ArticleService {
   /**
    * 获取文章详情（附带阅读量+1）
    */
-  async findOne(id: string): Promise<ArticleDetailResponseDto> {
+  async findOne(
+    id: string,
+    isCms: boolean = true,
+  ): Promise<ArticleDetailResponseDto> {
     const article = await this.articleRepository.findOne({
       where: { id },
       relations: ['category', 'tags'],
@@ -130,8 +133,10 @@ export class ArticleService {
     }
 
     // 访问自增
-    article.viewCount += 1;
-    await this.articleRepository.save(article);
+    if (!isCms) {
+      article.viewCount += 1;
+      await this.articleRepository.save(article);
+    }
 
     return ArticleDetailResponseSchema.parse(article);
   }

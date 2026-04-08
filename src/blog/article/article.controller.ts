@@ -30,7 +30,7 @@ import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('文章管理(Article)')
-@Controller('api/blog/article')
+@Controller('api/cms/article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
@@ -65,7 +65,6 @@ export class ArticleController {
     return ResponseDto.success(null, '修改文章成功');
   }
 
-  @Public()
   @Get('list')
   @UsePipes(ZodValidationPipe)
   @ApiOperation({ summary: '条件筛选并分页查询文章列表 (免登录)' })
@@ -75,7 +74,6 @@ export class ArticleController {
     return ResponseDto.success(data, '查询文章列表成功');
   }
 
-  @Public()
   @Get(':id')
   @ApiOperation({ summary: '查询文章详情 (免登录)' })
   @ApiParam({ name: 'id', description: '文章ID' })
