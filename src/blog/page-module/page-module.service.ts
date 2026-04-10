@@ -103,6 +103,7 @@ export class PageModuleService {
         title: true,
         summary: true,
         bannerUrl: true,
+        createdAt: true,
         category: {
           id: true,
           name: true,
