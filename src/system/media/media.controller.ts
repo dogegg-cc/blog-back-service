@@ -1,8 +1,9 @@
-import { Controller, Get, Query, Logger } from '@nestjs/common';
+import { Controller, Get, Query, Logger, UsePipes } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MediaService } from './media.service';
 import { GetStaticImagesQueryDto, StaticImagePageDto } from './dto/media.dto';
 import { ResponseDto } from '../../common/dto/response.dto';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @ApiTags('媒体管理')
 @Controller('system/media')
@@ -12,6 +13,7 @@ export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Get('static-images')
+  @UsePipes(ZodValidationPipe)
   @ApiOperation({ summary: '分页获取 public/static 目录下的所有照片' })
   @ApiResponse({
     status: 200,
