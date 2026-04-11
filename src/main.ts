@@ -35,7 +35,9 @@ const instance = WinstonModule.createLogger({
 });
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: instance });
+  const app = await NestFactory.create(AppModule, {
+    logger: instance,
+  });
 
   // 启用跨域资源共享 (CORS)
   app.enableCors({

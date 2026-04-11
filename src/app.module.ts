@@ -13,6 +13,7 @@ import { PageModuleModule } from './blog/page-module/page-module.module';
 import { HomeModule } from './blog/home/home.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UploadModule } from './system/upload/upload.module';
+import { MediaModule } from './system/media/media.module';
 import { join } from 'path';
 
 @Module({
@@ -30,6 +31,7 @@ import { join } from 'path';
     PageModuleModule,
     HomeModule,
     UploadModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [
