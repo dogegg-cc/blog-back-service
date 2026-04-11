@@ -3,6 +3,7 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  Logger,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -18,6 +19,7 @@ import { ResponseDto } from '../../common/dto/response.dto';
 import * as fs from 'fs';
 import ShortUniqueId from 'short-unique-id';
 import { BusinessException } from '../../common/exceptions/business.exception';
+import { imageSize } from 'image-size';
 
 // 确保存储目录必须在线存在
 const staticPath = join(process.cwd(), 'public/static');
@@ -31,6 +33,8 @@ const uid = new ShortUniqueId({ length: 12 });
 @ApiBearerAuth()
 @Controller('api/upload')
 export class UploadController {
+  private readonly logger = new Logger(UploadController.name);
+
   @Post('image')
   @ApiOperation({ summary: '上传单张图片' })
   @ApiConsumes('multipart/form-data')
@@ -85,6 +89,28 @@ export class UploadController {
     // 拼合最终通过网络可以直接访问的 URL 地址
     const url = `/static/${file.filename}`;
 
-    return ResponseDto.success({ url }, '图片上传成功');
+    // 获取图片尺寸
+    let dimensions = { width: 0, height: 0 };
+    try {
+      if (fs.existsSync(file.path)) {
+        const size = imageSize(fs.readFileSync(file.path));
+        if (size) {
+          dimensions = {
+            width: size.width || 0,
+            height: size.height || 0,
+          };
+        }
+      }
+    } catch (error) {
+      this.logger.error(`获取图片尺寸失败: ${file.path}`, error);
+    }
+
+    return ResponseDto.success(
+      {
+        url,
+        ...dimensions,
+      },
+      '图片上传成功',
+    );
   }
 }
