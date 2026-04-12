@@ -35,17 +35,13 @@ export class UserService {
     // 根据账号查询用户，必须显式 select password 才能用于比对
     const user = await this.userRepository.findOne({
       where: { username },
-      select: [
-        'id',
-        'username',
-        'password',
-        'isUpdatePassword',
-        'name',
-        'email',
-        'github',
-        'slogan',
-        'avatar',
-      ],
+      relations: ['avatarItem'],
+      select: {
+        id: true,
+        username: true,
+        password: true,
+        isUpdatePassword: true,
+      },
     });
 
     if (!user) {
@@ -78,8 +74,14 @@ export class UserService {
       'EX',
       60 * 60 * 24,
     );
+
+    const info = await this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['avatarItem'],
+    });
+
     // 返回给控制器的结果
-    return LogonResponseSchema.parse({ ...user, token: token });
+    return LogonResponseSchema.parse({ ...info, token: token });
   }
 
   /**
@@ -191,6 +193,7 @@ export class UserService {
     await this.userRepository.update(userId, updateUserDto);
     const userInfo = (await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['avatarItem'],
     })) as User;
     // 返回更新后的完整用户信息
     return UserInfoSchema.parse(userInfo);
@@ -202,6 +205,7 @@ export class UserService {
   async getUserInfo(userId: string): Promise<UserInfoDto> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['avatarItem'],
     });
 
     if (!user) {

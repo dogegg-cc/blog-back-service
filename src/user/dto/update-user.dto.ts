@@ -13,6 +13,7 @@ export const UpdateUserSchema = z.object({
   github: z.string().max(255).optional().or(z.literal('')),
   slogan: z.string().max(255).optional().or(z.literal('')),
   avatar: z.string().max(255).optional().or(z.literal('')),
+  avatarId: z.string().max(255).optional().or(z.literal('')),
 });
 
 export class UpdateUserDto extends createZodDto(UpdateUserSchema) {
@@ -30,4 +31,7 @@ export class UpdateUserDto extends createZodDto(UpdateUserSchema) {
 
   @ApiProperty({ description: '头像地址', required: false })
   avatar?: string;
+
+  @ApiProperty({ description: '头像ID', required: false })
+  avatarId?: string;
 }
