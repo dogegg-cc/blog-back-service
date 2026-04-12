@@ -4,7 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
+
+import { Photo } from './photo.entity';
 
 @Entity('sys_user')
 export class User {
@@ -53,8 +57,18 @@ export class User {
   })
   slogan!: string;
 
+  /**
+   * @deprecated 请使用 avatarItem 替代
+   */
   @Column({ name: 'avatar', length: 255, comment: '用户头像', nullable: true })
   avatar!: string;
+
+  @ManyToOne(() => Photo, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'avatar_id' })
+  avatarItem!: Photo;
+
+  @Column({ name: 'avatar_id', nullable: true })
+  avatarId!: string;
 
   @CreateDateColumn({
     name: 'created_at',

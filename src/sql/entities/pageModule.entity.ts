@@ -51,6 +51,11 @@ export class PageModule {
   content!: {
     articleIds?: string[]; // 需要按照文章id,读取文章信息
     imageUrls?: string[];
+    /**
+     * 新增：图片模型引用
+     * 存储 Photo 實体的 UUID 数组
+     */
+    photoIds?: string[];
   };
 
   @Column({

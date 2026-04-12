@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { Category } from './category.entity';
 import { Tag } from './tag.entity';
+import { Photo } from './photo.entity';
 
 @Entity('article')
 export class Article {
@@ -32,6 +33,9 @@ export class Article {
   })
   summary?: string;
 
+  /**
+   * @deprecated 请使用 bannerItem 替代
+   */
   @Column({
     name: 'banner_url',
     length: 255,
@@ -39,6 +43,13 @@ export class Article {
     comment: '封面海报',
   })
   bannerUrl?: string;
+
+  @ManyToOne(() => Photo, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'banner_id' })
+  bannerItem!: Photo;
+
+  @Column({ name: 'banner_id', nullable: true, comment: '封面海报id' })
+  bannerId!: string;
 
   @Column({
     name: 'view_count',

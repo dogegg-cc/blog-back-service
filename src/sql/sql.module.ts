@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Article } from './entities/article.entity';
 import { Category } from './entities/category.entity';
 import { Tag } from './entities/tag.entity';
+import { Photo } from './entities/photo.entity';
 
 @Module({
   providers: [SqlConfigService, UserInitService],
@@ -17,7 +18,7 @@ import { Tag } from './entities/tag.entity';
     TypeOrmModule.forRootAsync({
       useClass: SqlConfigService,
     }),
-    TypeOrmModule.forFeature([User, Article, Category, Tag]),
+    TypeOrmModule.forFeature([User, Article, Category, Tag, Photo]),
   ],
 })
 export class SqlModule {}

@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
-
 // 获取当前环境，默认为 development
 const env = process.env.NODE_ENV || 'development';
 
@@ -21,10 +20,10 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE || 'blog',
 
   // 关键配置：自动扫描所有的实体文件
-  entities: [__dirname + '/src/**/*.entity{.ts}'],
+  entities: [__dirname + '/src/**/*.entity.{ts,js}'],
 
   // 关键配置：迁移文件的存放位置
-  migrations: [__dirname + '/src/migrations/*{.ts}'],
+  migrations: [__dirname + '/src/migrations/*.{ts,js}'],
 
   synchronize: false, // 必须为 false，否则 Migration 无意义
   logging: true, // 建议开启，可以看到生成的 SQL 语句
