@@ -21,6 +21,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
+    if (request.url === '/favicon.ico') {
+      return response.status(204).end();
+    }
+
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let code = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = '服务器内部错误';

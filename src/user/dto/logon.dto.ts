@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { ApiProperty } from '@nestjs/swagger';
-
+import { PhotoDto, PhotoSchema } from '../../system/dto/photo.dto';
 export const LogonSchema = z.object({
   username: z.string().min(1, '请输入账号'),
   password: z.string().min(1, '请输入密码'),
@@ -23,6 +23,7 @@ export const LogonResponseSchema = z.object({
   github: z.string().optional().nullable(),
   slogan: z.string().optional().nullable(),
   avatar: z.string().optional().nullable(),
+  avatarItem: PhotoSchema.optional().nullable(),
 });
 
 export class LogonResponseDto extends createZodDto(LogonResponseSchema) {
@@ -46,4 +47,7 @@ export class LogonResponseDto extends createZodDto(LogonResponseSchema) {
 
   @ApiProperty({ description: '用户头像' })
   avatar?: string | null;
+
+  @ApiProperty({ description: '用户头像详细信息' })
+  avatarItem?: PhotoDto | null;
 }

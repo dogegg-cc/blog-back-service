@@ -48,8 +48,8 @@ export class SqlConfigService implements TypeOrmOptionsFactory {
       autoLoadEntities: true,
       synchronize: false, // 开发环境适用，生产环境强制关闭
       logging: enableSync,
-      migrations: ['./src/migrations/*.ts'],
-      migrationsRun: enableSync,
+      migrations: isProduction ? ['dist/src/migrations/*.js'] : [],
+      migrationsRun: false,
     };
   }
 }
