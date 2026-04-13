@@ -35,7 +35,7 @@ export class PageModuleController {
   }
 
   @Get()
-  @ApiOperation({ summary: '获取所有首页模块' })
+  @ApiOperation({ summary: '获取所有首页模块（简洁模式）' })
   @ApiSuccessResponse({
     type: PageModuleResponseDto,
     isArray: true,
@@ -43,6 +43,17 @@ export class PageModuleController {
   })
   async findAll() {
     const data = await this.pageModuleService.findAll();
+    return ResponseDto.success(data, '获取成功');
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: '获取首页模块详情（展开内容）' })
+  @ApiSuccessResponse({
+    type: PageModuleResponseDto,
+    description: '获取详情成功',
+  })
+  async findOne(@Param('id') id: string) {
+    const data = await this.pageModuleService.findOne(id);
     return ResponseDto.success(data, '获取成功');
   }
 

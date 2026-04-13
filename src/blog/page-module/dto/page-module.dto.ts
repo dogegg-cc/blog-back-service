@@ -1,11 +1,18 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { ApiProperty } from '@nestjs/swagger';
+import { PhotoDto, PhotoSchema } from '../../../system/dto/photo.dto';
+import {
+  CategoryResponseDto,
+  CategoryResponseSchema,
+} from '../../category/dto/category.dto';
+import { TagResponseDto, TagResponseSchema } from '../../tag/dto/tag.dto';
 
 // 模块内容 Schema
 const PageModuleContentSchema = z.object({
   articleIds: z.array(z.string()).optional(),
   imageUrls: z.array(z.string()).optional(),
+  photoIds: z.array(z.string()).optional(),
 });
 
 /**
@@ -41,9 +48,13 @@ export class CreatePageModuleDto extends createZodDto(CreatePageModuleSchema) {
 
   @ApiProperty({
     description: '核心内容',
-    example: { articleIds: ['id1'], imageUrls: [] },
+    example: { articleIds: ['id1'], imageUrls: [], photoIds: [] },
   })
-  content!: { articleIds?: string[]; imageUrls?: string[] };
+  content!: {
+    articleIds?: string[];
+    imageUrls?: string[];
+    photoIds?: string[];
+  };
 
   @ApiProperty({ description: '是否启用', default: true })
   isActive!: boolean;
@@ -62,7 +73,9 @@ export const ArticleSummarySchema = z.object({
   id: z.string(),
   title: z.string(),
   summary: z.string().optional().nullable(),
-  bannerUrl: z.string().optional().nullable(),
+  bannerItem: PhotoSchema.optional().nullable(),
+  category: CategoryResponseSchema.optional().nullable(),
+  tags: z.array(TagResponseSchema).optional(),
 });
 
 export class ArticleSummaryDto extends createZodDto(ArticleSummarySchema) {
@@ -75,8 +88,16 @@ export class ArticleSummaryDto extends createZodDto(ArticleSummarySchema) {
   @ApiProperty({ description: '文章摘要', required: false })
   summary?: string | null;
 
-  @ApiProperty({ description: '封面图地址', required: false })
-  bannerUrl?: string | null;
+  @ApiProperty({ description: '文章封面图', required: false })
+  bannerItem?: PhotoDto | null;
+  @ApiProperty({ description: '文章分类', required: false })
+  category?: CategoryResponseDto | null;
+  @ApiProperty({
+    description: '文章标签',
+    required: false,
+    type: [TagResponseDto],
+  })
+  tags?: TagResponseDto[];
 }
 
 /**
@@ -89,12 +110,22 @@ export class PageModuleResponseContentDto {
   @ApiProperty({ description: '图片URL列表', type: [String], required: false })
   imageUrls?: string[];
 
+  @ApiProperty({ description: '图片ID列表', type: [String], required: false })
+  photoIds?: string[];
+
   @ApiProperty({
     description: '展开后的文章列表',
     type: [ArticleSummaryDto],
     required: false,
   })
   articles?: ArticleSummaryDto[];
+
+  @ApiProperty({
+    description: '展开后的图片列表',
+    type: [PhotoDto],
+    required: false,
+  })
+  photoItems?: PhotoDto[];
 }
 
 /**
@@ -104,6 +135,7 @@ export const PageModuleResponseSchema = CreatePageModuleSchema.extend({
   id: z.string(),
   content: PageModuleContentSchema.extend({
     articles: z.array(ArticleSummarySchema).optional(),
+    photoItems: z.array(PhotoSchema).optional(),
   }),
   createdAt: z.any(),
   updatedAt: z.any(),
