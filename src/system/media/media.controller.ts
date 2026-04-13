@@ -14,16 +14,16 @@ export class MediaController {
 
   @Get('static-images')
   @UsePipes(ZodValidationPipe)
-  @ApiOperation({ summary: '分页获取 public/static 目录下的所有照片' })
+  @ApiOperation({ summary: '分页获取数据库中的所有照片' })
   @ApiResponse({
     status: 200,
-    description: '成功返回静态图片列表',
+    description: '成功返回图片列表',
     type: StaticImagePageDto,
   })
-  getStaticImages(
+  async getStaticImages(
     @Query() query: GetStaticImagesQueryDto,
-  ): ResponseDto<StaticImagePageDto> {
-    const result = this.mediaService.getStaticImages(query);
+  ): Promise<ResponseDto<StaticImagePageDto>> {
+    const result = await this.mediaService.getStaticImages(query);
     return ResponseDto.success(result);
   }
 }

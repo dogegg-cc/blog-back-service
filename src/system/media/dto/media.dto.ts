@@ -1,6 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { PhotoDto, PhotoSchema } from '../../dto/photo.dto';
 
 // --- Query ---
 export const GetStaticImagesQuerySchema = z.object({
@@ -18,30 +19,16 @@ export class GetStaticImagesQueryDto extends createZodDto(
   limit!: number;
 }
 
-// --- Response Item ---
-export const StaticImageItemSchema = z.object({
-  url: z.string(),
-  name: z.string(),
-});
-
-export class StaticImageItemDto extends createZodDto(StaticImageItemSchema) {
-  @ApiProperty({ description: '图片访问路径' })
-  url!: string;
-
-  @ApiProperty({ description: '图片名称' })
-  name!: string;
-}
-
 // --- Paginated Response ---
 export const StaticImagePageSchema = z.object({
   total: z.number(),
-  items: z.array(StaticImageItemSchema),
+  items: z.array(PhotoSchema),
 });
 
 export class StaticImagePageDto extends createZodDto(StaticImagePageSchema) {
   @ApiProperty({ description: '总条数' })
   total!: number;
 
-  @ApiProperty({ type: [StaticImageItemDto], description: '图片列表' })
-  items!: StaticImageItemDto[];
+  @ApiProperty({ type: [PhotoDto], description: '图片列表' })
+  items!: PhotoDto[];
 }
