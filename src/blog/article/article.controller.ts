@@ -27,7 +27,6 @@ import {
 } from '@nestjs/swagger';
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
-import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('文章管理(Article)')
 @Controller('api/cms/article')

@@ -93,6 +93,7 @@ export class ArticleService {
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.category', 'category')
       .leftJoinAndSelect('article.tags', 'tags')
+      .leftJoinAndSelect('article.bannerItem', 'bannerItem')
       .orderBy('article.createdAt', 'DESC')
       .skip(((page ?? 1) - 1) * (limit ?? 10))
       .take(limit ?? 10);
@@ -125,7 +126,7 @@ export class ArticleService {
   ): Promise<ArticleDetailResponseDto> {
     const article = await this.articleRepository.findOne({
       where: { id },
-      relations: ['category', 'tags'],
+      relations: ['category', 'tags', 'bannerItem'],
     });
 
     if (!article) {

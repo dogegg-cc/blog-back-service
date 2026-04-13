@@ -6,6 +6,7 @@ import {
   CategoryResponseSchema,
   CategoryResponseDto,
 } from '../../category/dto/category.dto';
+import { PhotoDto, PhotoSchema } from '../../../system/dto/photo.dto';
 
 // --- Create ---
 export const CreateArticleSchema = z.object({
@@ -13,6 +14,7 @@ export const CreateArticleSchema = z.object({
   content: z.string().min(1, '内容不能为空'),
   summary: z.string().max(500, '摘要过长').optional(),
   bannerUrl: z.string().max(255, '地址超长').optional(),
+  bannerId: z.string().max(36, 'bannerID').optional(),
   categoryId: z.string().optional().nullable(),
   tagIds: z.array(z.string()).optional(),
 });
@@ -29,6 +31,9 @@ export class CreateArticleDto extends createZodDto(CreateArticleSchema) {
 
   @ApiPropertyOptional({ description: '首图' })
   bannerUrl?: string;
+
+  @ApiPropertyOptional({ description: '首图ID' })
+  bannerId?: string;
 
   @ApiPropertyOptional({ description: '分类ID' })
   categoryId?: string | null;
@@ -48,6 +53,8 @@ export class UpdateArticleDto extends createZodDto(UpdateArticleSchema) {
   summary?: string;
   @ApiPropertyOptional({ description: '首图' })
   bannerUrl?: string;
+  @ApiPropertyOptional({ description: '首图ID' })
+  bannerId?: string;
   @ApiPropertyOptional({ description: '分类ID' })
   categoryId?: string | null;
   @ApiPropertyOptional({ description: '绑定的多个标签ID' })
@@ -92,6 +99,7 @@ export const ArticleListResponseSchema = z.object({
   title: z.string(),
   summary: z.string().nullable().optional(),
   bannerUrl: z.string().nullable().optional(),
+  bannerItem: PhotoSchema.nullable().optional(),
   viewCount: z.number(),
   createdAt: z.any(),
   updatedAt: z.any(),
@@ -108,6 +116,8 @@ export class ArticleListResponseDto extends createZodDto(
   @ApiPropertyOptional({ description: '封面Banner URL' }) bannerUrl?:
     | string
     | null;
+  @ApiPropertyOptional({ description: '封面Banner', type: PhotoDto })
+  bannerItem?: PhotoDto | null;
   @ApiProperty({ description: '总计浏览数' }) viewCount!: number;
   @ApiProperty({ description: '创建时间' }) createdAt!: Date;
   @ApiProperty({ description: '最后更新时间' }) updatedAt!: Date;
@@ -147,6 +157,8 @@ export class ArticleDetailResponseDto extends createZodDto(
   @ApiPropertyOptional({ description: '封面Banner URL' }) bannerUrl?:
     | string
     | null;
+  @ApiPropertyOptional({ description: '封面Banner', type: PhotoDto })
+  bannerItem?: PhotoDto | null;
   @ApiProperty({ description: '总计浏览数' }) viewCount!: number;
   @ApiProperty({ description: '创建时间' }) createdAt!: Date;
   @ApiProperty({ description: '最后更新时间' }) updatedAt!: Date;
