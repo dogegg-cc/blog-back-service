@@ -221,8 +221,14 @@ export class UserService {
   async getBlogOwnerInfo() {
     return await this.userRepository.findOne({
       where: {},
-      order: { createdAt: 'ASC' },
-      select: ['name', 'email', 'github', 'slogan', 'avatar'],
+      relations: ['avatarItem'],
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        github: true,
+        slogan: true,
+      },
     });
   }
 }

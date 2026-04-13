@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '../../user/user.service';
 import { PageModuleService } from '../page-module/page-module.service';
-import { HomeResponseDto, HomeUserDto } from './dto/home-response.dto';
-import { PageModuleResponseDto } from '../page-module/dto/page-module.dto';
+import { HomeResponseDto, HomeResponseSchema } from './dto/home-response.dto';
 import { ArticleService } from '../article/article.service';
 import {
   ArticleDetailResponseDto,
@@ -25,10 +24,11 @@ export class HomeService {
     const user = await this.userService.getBlogOwnerInfo();
     const modules = await this.pageModuleService.findActiveModules();
 
-    return {
-      user: user as HomeUserDto | null,
-      pageModule: modules as PageModuleResponseDto[],
-    };
+    // 使用 Zod 对聚合并经过转换的数据进行最终校验与过滤（自动剥离 Schema 中未定义的 id 等字段）
+    return HomeResponseSchema.parse({
+      user,
+      pageModule: modules,
+    });
   }
 
   async findArticleList(
