@@ -3,10 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from '../../sql/entities/article.entity';
 import { Category } from '../../sql/entities/category.entity';
+import { Tag } from '../../sql/entities/tag.entity';
 import {
   CategoryRatioDto,
   CategoryPopularityDto,
   PostTrendDto,
+  StatisticsSummaryDto,
 } from './dto/statistics.dto';
 
 @Injectable()
@@ -16,7 +18,30 @@ export class StatisticsService {
     private readonly articleRepository: Repository<Article>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
   ) {}
+
+  /**
+   * 获取全站统计汇总数据
+   */
+  async getSummary(): Promise<StatisticsSummaryDto> {
+    const articleCount = await this.articleRepository.count();
+    const categoryCount = await this.categoryRepository.count();
+    const tagCount = await this.tagRepository.count();
+
+    const result = await this.articleRepository
+      .createQueryBuilder('article')
+      .select('SUM(article.viewCount)', 'totalViews')
+      .getRawOne<{ totalViews: string }>();
+
+    return {
+      articleCount,
+      categoryCount,
+      tagCount,
+      totalViews: Number(result?.totalViews || 0),
+    };
+  }
 
   /**
    * 分类文章占比图数据 (饼图)

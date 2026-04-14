@@ -4,9 +4,10 @@ import { StatisticsService } from './statistics.service';
 import { StatisticsController } from './statistics.controller';
 import { Article } from '../../sql/entities/article.entity';
 import { Category } from '../../sql/entities/category.entity';
+import { Tag } from '../../sql/entities/tag.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Article, Category])],
+  imports: [TypeOrmModule.forFeature([Article, Category, Tag])],
   controllers: [StatisticsController],
   providers: [StatisticsService],
   exports: [StatisticsService],

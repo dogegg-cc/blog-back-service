@@ -5,6 +5,7 @@ import {
   CategoryRatioDto,
   CategoryPopularityDto,
   PostTrendDto,
+  StatisticsSummaryDto,
 } from './dto/statistics.dto';
 import { ResponseDto } from '../../common/dto/response.dto';
 import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
@@ -13,6 +14,17 @@ import { ApiSuccessResponse } from '../../common/decorators/swagger.decorator';
 @Controller('api/blog/statistics')
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
+
+  @Get('summary')
+  @ApiOperation({ summary: '获取全站统计汇总数据 (创作/分类/标签/阅读)' })
+  @ApiSuccessResponse({
+    type: StatisticsSummaryDto,
+    description: '获取成功',
+  })
+  async getSummary() {
+    const data = await this.statisticsService.getSummary();
+    return ResponseDto.success(data, '获取成功');
+  }
 
   @Get('category-ratio')
   @ApiOperation({ summary: '各个分类下的文章数量占比 (饼图)' })
