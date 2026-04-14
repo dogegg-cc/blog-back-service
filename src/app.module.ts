@@ -14,6 +14,7 @@ import { HomeModule } from './blog/home/home.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { UploadModule } from './system/upload/upload.module';
 import { MediaModule } from './system/media/media.module';
+import { StatisticsModule } from './blog/statistics/statistics.module';
 import { join } from 'path';
 
 @Module({
@@ -32,6 +33,7 @@ import { join } from 'path';
     HomeModule,
     UploadModule,
     MediaModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [
