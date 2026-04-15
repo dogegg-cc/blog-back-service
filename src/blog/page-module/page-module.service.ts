@@ -85,7 +85,7 @@ export class PageModuleService {
   async findAll() {
     return await this.pageModuleRepository.find({
       order: {
-        sortOrder: 'ASC',
+        sortOrder: 'DESC',
       },
     });
   }
