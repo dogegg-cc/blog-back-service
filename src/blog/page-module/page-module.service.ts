@@ -35,6 +35,10 @@ export class PageModuleService {
    */
   async create(createPageModuleDto: CreatePageModuleDto) {
     const module = this.pageModuleRepository.create(createPageModuleDto);
+    const count = await this.pageModuleRepository.count();
+    console.log('当前有这么多数据:' + count);
+
+    module.sortOrder = count + 1;
     return await this.pageModuleRepository.save(module);
   }
 
@@ -85,7 +89,7 @@ export class PageModuleService {
   async findAll() {
     return await this.pageModuleRepository.find({
       order: {
-        sortOrder: 'DESC',
+        sortOrder: 'ASC',
       },
     });
   }
@@ -173,7 +177,7 @@ export class PageModuleService {
     const modules = await this.pageModuleRepository.find({
       where: { isActive: true },
       order: {
-        sortOrder: 'DESC',
+        sortOrder: 'ASC',
       },
     });
 
