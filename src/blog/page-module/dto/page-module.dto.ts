@@ -67,6 +67,20 @@ export const UpdatePageModuleSchema = CreatePageModuleSchema.partial();
 export class UpdatePageModuleDto extends createZodDto(UpdatePageModuleSchema) {}
 
 /**
+ * 模块批量排序 DTO
+ */
+export const ReorderPageModuleSchema = z.object({
+  ids: z.array(z.string()).min(1, '请提供有效的ID列表'),
+});
+
+export class ReorderPageModuleDto extends createZodDto(
+  ReorderPageModuleSchema,
+) {
+  @ApiProperty({ description: '排序后的ID列表', type: [String] })
+  ids!: string[];
+}
+
+/**
  * 文章简要信息 (响应结构)
  */
 export const ArticleSummarySchema = z.object({

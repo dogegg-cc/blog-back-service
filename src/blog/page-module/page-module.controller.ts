@@ -13,6 +13,7 @@ import {
   CreatePageModuleDto,
   PageModuleResponseDto,
   UpdatePageModuleDto,
+  ReorderPageModuleDto,
 } from './dto/page-module.dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -55,6 +56,18 @@ export class PageModuleController {
   async findOne(@Param('id') id: string) {
     const data = await this.pageModuleService.findOne(id);
     return ResponseDto.success(data, '获取成功');
+  }
+
+  @Patch('reorder')
+  @UsePipes(ZodValidationPipe)
+  @ApiOperation({ summary: '批量更新首页模块排序' })
+  @ApiSuccessResponse({
+    type: Object,
+    description: '更新排序成功',
+  })
+  async reorder(@Body() reorderDto: ReorderPageModuleDto) {
+    await this.pageModuleService.reorder(reorderDto.ids);
+    return ResponseDto.success(null, '更新排序成功');
   }
 
   @Patch(':id')

@@ -183,4 +183,15 @@ export class PageModuleService {
 
     return await this.expandModuleContent(modules);
   }
+
+  /**
+   * 批量更新模块排序
+   */
+  async reorder(ids: string[]) {
+    await this.pageModuleRepository.manager.transaction(async (manager) => {
+      for (let i = 0; i < ids.length; i++) {
+        await manager.update(PageModule, ids[i], { sortOrder: i + 1 });
+      }
+    });
+  }
 }
