@@ -1,98 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Blog Back Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+`blog-back-service` 是一个基于 **NestJS** 构建的高性能、模块化博客后端服务。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🌟 项目简介
 
-## Description
+本项目旨在为个人或中小型团队提供一个稳定、易扩展的博客后端解决方案。支持以下核心特性：
+- **文章管理**：支持 Markdown 全文本存储、封面图管理及发布流管理。
+- **分类体系**：支持多级分类与灵活的标签系统。
+- **统计分析**：内置文章、分类及各维度数据统计模块。
+- **媒体托管**：集成本地静态资源服务与 Sharp 图像处理优化。
+- **安全体系**：基于 JWT 的全局鉴权、Bcrypt 密码加密及严格的 DTO 校验。
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🛠 环境依赖
 
-## Project setup
+在运行项目之前，请确保您的系统中已安装以下软件：
 
-```bash
-$ npm install
+| 依赖项         | 建议版本 | 说明                |
+| :------------- | :------- | :------------------ |
+| **Node.js**    | >= 18.x  | 推荐使用 LTS 版本   |
+| **npm / pnpm** | >= 9.x   | 包管理工具          |
+| **PostgreSQL** | >= 14.x  | 主数据库            |
+| **Redis**      | >= 6.x   | 缓存与 Session 管理 |
+
+## 🏗 项目架构
+
+项目严格遵循 NestJS 模块化规范，核心结构如下：
+
+```text
+src/
+├── blog/             # 博客核心业务
+│   ├── article/      # 文章管理
+│   ├── category/     # 分类管理
+│   ├── tag/          # 标签管理
+│   └── statistics/   # 数据统计
+├── user/             # 用户管理及鉴权 (Auth)
+├── system/           # 系统基础设施
+│   ├── upload/       # 文件上传逻辑
+│   └── media/        # 媒体资源处理
+├── common/           # 公共逻辑 (Guards, Decorators, Filters, DTOs)
+├── redis/            # Redis 缓存封装
+├── sql/              # 数据库底层与初始化
+└── main.ts           # 应用入口
 ```
 
-## Compile and run the project
+## 🚀 快速开始
 
+### 1. 安装依赖
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
-
+### 2. 环境配置
+复制环境变量文件并修改配置（数据库、Redis、JWT 密钥等）：
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.development .env
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 3. 数据库迁移
+运行数据库迁移以初始化表结构：
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run migration:run:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 4. 启动服务
+```bash
+# 开发模式
+npm run start:dev
 
-## Resources
+# 生产模式编译
+npm run build
+npm run start:prod
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📖 API 文档
+项目启动后，可以通过以下路径访问在线 Swagger 文档：
+`http://localhost:<PORT>/api/api-docs` (具体取决于 main.ts 中的 Swagger 配置)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🛡 开发规范
+- **代码校验**：所有输入数据必须经过 `Zod` DTO 校验。
+- **时区**：数据库字段必须使用 `timestamptz` 类型。
+- **日志**：项目集成 Winston 分级日志管理，可在 `logs/` 目录下查看。
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 项目运行步骤
+- 1.npm install
+- 2.安装PostgreSql,并手动创建数据库，在.env.development文件中配置数据库连接信息。
+- 3.安装Redis,并手动创建数据库，在.env.development文件中配置Redis连接信息。
+- 4.运行数据库迁移：npm run migration:run:dev
+- 5.启动服务：npm run start:dev

@@ -30,13 +30,13 @@ export class SqlConfigService implements TypeOrmOptionsFactory {
     return this.config.get<string>('DB_DATABASE')!;
   }
 
-  get dbSync(): boolean {
-    return this.config.get<string>('DB_SYNC')! === 'true';
+  get dbOpenLog(): boolean {
+    return this.config.get<string>('DB_OPEN_LOG')! === 'true';
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const isProduction = this.config.get<string>('NODE_ENV') === 'production';
-    const enableSync = isProduction ? false : this.dbSync; // 严禁在生产环境开启 `synchronize: true`
+    const dbOpenLog = isProduction ? false : this.dbOpenLog; // 严禁在生产环境开启日志
 
     return {
       type: 'postgres',
@@ -47,7 +47,7 @@ export class SqlConfigService implements TypeOrmOptionsFactory {
       database: this.dbDatabase,
       autoLoadEntities: true,
       synchronize: false, // 开发环境适用，生产环境强制关闭
-      logging: enableSync,
+      logging: dbOpenLog,
       migrations: isProduction ? ['dist/src/migrations/*.js'] : [],
       migrationsRun: false,
     };
