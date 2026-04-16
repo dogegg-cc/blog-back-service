@@ -87,3 +87,6 @@ npm run start:prod
 - 3.安装Redis,并手动创建数据库，在.env.development文件中配置Redis连接信息。
 - 4.运行数据库迁移：npm run migration:run:dev
 - 5.启动服务：npm run start:dev
+
+---
+由 **Antigravity** 协助驱动。
